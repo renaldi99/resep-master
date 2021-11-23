@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "FoodRecipes",
-    "slug": "FoodRecipes",
+    "name": "Resep Master",
+    "slug": "resep-master",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,6 +10,22 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "packagerOpts": {
+      "config": "metro.config.js",
+      "sourceExts": [
+        "expo.ts",
+        "expo.tsx",
+        "expo.js",
+        "expo.jsx",
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "json",
+        "wasm",
+        "svg"
+      ]
+    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -17,9 +33,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.build.resepmakanan",
+      "buildNumber": "1.0.0"
     },
     "android": {
+      "package": "com.build.resepmakanan",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
