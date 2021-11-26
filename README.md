@@ -5,14 +5,14 @@ Application Information About Food Recipes, and step by step to cook. This App b
 ---
 
 ```
-# - Component React native (Paper-UI, Native Base, RN Element, React Navigation, React native svg)
-# - Asyncstorage / Firebase Authentication Email/Password
+## - Component React native (Paper-UI, Native Base, RN Element, React Navigation, React native svg)
+## - Asyncstorage / Firebase Authentication Email/Password
 ```
 
 ---
 
 ```
-### Data From API 🚀 https://masak-apa.tomorisakura.vercel.app
+## Data From API 🚀 https://masak-apa.tomorisakura.vercel.app
 ```
 
 ---
