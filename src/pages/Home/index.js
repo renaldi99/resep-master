@@ -15,11 +15,13 @@ import { API_URL } from "../../data/DataApi";
 import axios from "axios";
 import { IconTime } from "../../assets";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Jarak } from "../../components";
 
 const Home = ({ navigation }) => {
   const [recommended, setRecommended] = useState([]);
   const [category, setCategory] = useState([]);
   const [recipe, setRecipe] = useState([]);
+  const [categorySelected, setCategorySelected] = useState("resep-dessert");
 
   const getData = () => {
     axios
@@ -43,7 +45,22 @@ const Home = ({ navigation }) => {
       });
 
     axios
-      .get(API_URL + "recipes/1")
+      .get(API_URL + "categorys/recipes/" + categorySelected)
+      .then((res) => {
+        const dataRecipe = res.data.results;
+        setRecipe(dataRecipe);
+        // console.log(dataRecipe);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const changeCategory = (value) => {
+    setCategorySelected(value);
+    setRecipe([]);
+    axios
+      .get(API_URL + "categorys/recipes/" + categorySelected)
       .then((res) => {
         const dataRecipe = res.data.results;
         setRecipe(dataRecipe);
@@ -127,9 +144,18 @@ const Home = ({ navigation }) => {
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => {
               return (
-                <TouchableOpacity style={styles.wrapperButtonCategory}>
-                  <Text style={styles.textCategory}>{item.category}</Text>
-                </TouchableOpacity>
+                <>
+                  <TouchableOpacity
+                    style={
+                      categorySelected === item.key
+                        ? styles.wrapperButtonCategory
+                        : styles.wrapperButtonCategoryNotSelected
+                    }
+                    onPress={() => changeCategory(item.key)}
+                  >
+                    <Text style={styles.textCategory}>{item.category}</Text>
+                  </TouchableOpacity>
+                </>
               );
             }}
           />
@@ -273,6 +299,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     backgroundColor: colors.colorSecondary,
+    borderRadius: 8,
+    marginTop: 15,
+  },
+  wrapperButtonCategoryNotSelected: {
+    marginLeft: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: colors.whiteGrey,
     borderRadius: 8,
     marginTop: 15,
   },

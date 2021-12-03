@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const Jarak = ({ height, widht }) => {
-  return <View height={height} widht={widht} />;
+const Jarak = ({ height, width }) => {
+  return <View height={height} width={width} />;
 };
 
 export default Jarak;
