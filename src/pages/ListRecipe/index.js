@@ -17,7 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const ListRecipe = ({ navigation }) => {
   const [recipe, setRecipe] = useState([]);
 
-  console.log(recipe);
+  // console.log(recipe);
 
   const getList = () => {
     axios

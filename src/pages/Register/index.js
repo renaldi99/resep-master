@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   Alert,
-  Button,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,6 +15,7 @@ import {
   heightMobileUI,
   responsiveHeight,
   responsiveWidth,
+  storeData,
 } from "../../utils";
 import Jarak from "../../components/Jarak";
 import {
@@ -22,6 +23,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 
 const Register = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -41,28 +43,39 @@ const Register = ({ navigation }) => {
   }, []);
 
   const submit = () => {
-    if (email === "" && password === "") {
-      Alert.alert("Masukkan data lengkap!");
-    }
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        user.displayName = username;
-        navigation.replace("MainApp");
-        Alert.alert("Registrasi Berhasil");
+    if (email && username && password) {
+      const dataUser = {
+        email: email,
+        username: username,
+      };
 
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
+      createUserWithEmailAndPassword(auth, dataUser.email, password)
+        .then((success) => {
+          // Signed in
+          const newDataUser = {
+            ...dataUser,
+            uid: success.user.uid,
+          };
+
+          // simpan ke database
+          const db = getDatabase();
+          set(ref(db, "users/" + success.user.uid), newDataUser);
+
+          // simpan ke local storage
+          storeData("user", newDataUser);
+          navigation.replace("MainApp");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
+    } else {
+      Alert.alert("Form can't be empty😁");
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <View style={styles.wrapperLogo}>
         <LogoSmall style={styles.logo} width={180} height={100} />
       </View>
@@ -110,7 +123,7 @@ const Register = ({ navigation }) => {
           <Text style={styles.registerText}>Login</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

@@ -1,30 +1,52 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { IconEdit, IconLogout, IconSetting } from "../../assets";
 import {
+  clearStorage,
   colors,
+  getDataLocal,
   heightMobileUI,
   responsiveHeight,
-  responsiveWidth,
 } from "../../utils";
 import { getAuth } from "@firebase/auth";
 
 const Profile = ({ navigation, route }) => {
-  const auth = getAuth();
+  const [profile, setProfile] = useState();
 
-  console.log(auth);
+  const auth = getAuth();
 
   const handleLogout = () => {
     auth
       .signOut()
       .then(() => {
-        navigation.navigate("Login");
+        clearStorage();
+        navigation.replace("Login");
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
+  const getDataUser = () => {
+    getDataLocal("user").then((res) => {
+      const data = res;
+
+      if (data) {
+        setProfile(data);
+      } else {
+        navigation.replace("Login");
+      }
+    });
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getDataUser();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -34,10 +56,8 @@ const Profile = ({ navigation, route }) => {
           source={require("../../assets/images/user.png")}
         />
         <View style={styles.sectionProfile}>
-          <Text style={styles.sectionTextName}>
-            {auth.currentUser?.displayName}
-          </Text>
-          <Text style={styles.sectionTextEmail}>{auth.currentUser?.email}</Text>
+          <Text style={styles.sectionTextName}>{profile?.username}</Text>
+          <Text style={styles.sectionTextEmail}>{profile?.email}</Text>
         </View>
         <View style={styles.sectionMenuProfile}>
           <TouchableOpacity style={styles.wrapperMenu}>

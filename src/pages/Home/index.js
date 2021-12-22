@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Alert,
   FlatList,
   Image,
   ScrollView,
@@ -15,7 +14,6 @@ import { API_URL } from "../../data/DataApi";
 import axios from "axios";
 import { IconTime } from "../../assets";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Jarak } from "../../components";
 
 const Home = ({ navigation }) => {
   const [recommended, setRecommended] = useState([]);
