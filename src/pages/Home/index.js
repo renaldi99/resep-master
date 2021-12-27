@@ -12,7 +12,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { colors, heightMobileUI } from "../../utils";
 import { API_URL } from "../../data/DataApi";
 import axios from "axios";
-import { IconTime } from "../../assets";
+import { DefaultImageProfile, IconTime } from "../../assets";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Home = ({ navigation }) => {
@@ -81,10 +81,7 @@ const Home = ({ navigation }) => {
             <Text style={styles.titleName}>Hello 👋</Text>
             <Text style={styles.textContent}>Mau masak apa hari ini?</Text>
           </View>
-          <Image
-            style={styles.userImage}
-            source={require("../../assets/images/user.png")}
-          />
+          <Image style={styles.userImage} source={DefaultImageProfile} />
         </View>
 
         <View style={styles.sectionContentRecommended}>

@@ -14,7 +14,6 @@ import {
   colors,
   heightMobileUI,
   responsiveHeight,
-  responsiveWidth,
   storeData,
 } from "../../utils";
 import Jarak from "../../components/Jarak";

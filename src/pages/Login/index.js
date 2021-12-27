@@ -10,19 +10,26 @@ import {
 import { RFValue } from "react-native-responsive-fontsize";
 import { LogoSmall } from "../../assets";
 import { TextInput } from "react-native-paper";
-import { colors, heightMobileUI, responsiveHeight } from "../../utils";
+import {
+  colors,
+  heightMobileUI,
+  responsiveHeight,
+  storeData,
+} from "../../utils";
 import Jarak from "../../components/Jarak";
 import {
   getAuth,
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
+import { getDatabase, ref, onValue } from "firebase/database";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const auth = getAuth();
+  const db = getDatabase();
 
   useEffect(() => {
     const noUser = onAuthStateChanged(auth, (user) => {
@@ -35,20 +42,24 @@ const Login = ({ navigation }) => {
   }, []);
 
   const submit = () => {
-    if (email === "" && password === "") {
-      Alert.alert("Email / Password Kosong");
+    if (email && password) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((success) => {
+          // Signed in
+          onValue(ref(db, "/users/" + success.user.uid), (resDB) => {
+            if (resDB) {
+              const data = resDB.val();
+              storeData("user", data);
+            }
+          });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        });
+    } else {
+      Alert.alert("Error");
     }
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        navigation.replace("MainApp");
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
   };
 
   return (

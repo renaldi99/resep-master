@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
-import { IconEdit, IconLogout, IconSetting } from "../../assets";
+import {
+  DefaultImageProfile,
+  IconEdit,
+  IconLogout,
+  IconSetting,
+} from "../../assets";
 import {
   clearStorage,
   colors,
@@ -51,10 +56,7 @@ const Profile = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.wrapperContent}>
-        <Image
-          style={styles.imageUser}
-          source={require("../../assets/images/user.png")}
-        />
+        <Image style={styles.imageUser} source={DefaultImageProfile} />
         <View style={styles.sectionProfile}>
           <Text style={styles.sectionTextName}>{profile?.username}</Text>
           <Text style={styles.sectionTextEmail}>{profile?.email}</Text>
