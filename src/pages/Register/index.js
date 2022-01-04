@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { LogoSmall } from "../../assets";
-import { TextInput } from "react-native-paper";
+import { ActivityIndicator, TextInput } from "react-native-paper";
 import {
   colors,
   heightMobileUI,
@@ -17,14 +17,11 @@ import {
   storeData,
 } from "../../utils";
 import Jarak from "../../components/Jarak";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { connect } from "react-redux";
+import { registerUser } from "../../actions/AuthAction";
 
-const Register = ({ navigation }) => {
+const Register = ({ navigation, dispatch, registerLoading }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,26 +45,8 @@ const Register = ({ navigation }) => {
         username: username,
       };
 
-      createUserWithEmailAndPassword(auth, dataUser.email, password)
-        .then((success) => {
-          // Signed in
-          const newDataUser = {
-            ...dataUser,
-            uid: success.user.uid,
-          };
-
-          // simpan ke database
-          const db = getDatabase();
-          set(ref(db, "users/" + success.user.uid), newDataUser);
-
-          // simpan ke local storage
-          storeData("user", newDataUser);
-          navigation.replace("MainApp");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-        });
+      // action ke authaction
+      dispatch(registerUser(dataUser, password));
     } else {
       Alert.alert("Form can't be empty😁");
     }
@@ -111,8 +90,18 @@ const Register = ({ navigation }) => {
             right={<TextInput.Affix />}
           />
           <Jarak height={25} />
-          <TouchableOpacity onPress={submit} style={styles.buttonLogin}>
-            <Text style={styles.textLogin}>Register</Text>
+          <TouchableOpacity
+            onPress={submit}
+            style={styles.buttonLogin(registerLoading)}
+          >
+            {registerLoading ? (
+              <>
+                <ActivityIndicator size="small" color={colors.white} />
+                <Text style={styles.textLogin}>Loading . . .</Text>
+              </>
+            ) : (
+              <Text style={styles.textLogin}>Register</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -126,7 +115,13 @@ const Register = ({ navigation }) => {
   );
 };
 
-export default Register;
+const mapStateToProps = (state) => ({
+  registerLoading: state.AuthReducer.registerLoading,
+  registerResult: state.AuthReducer.registerResult,
+  registerError: state.AuthReducer.registerError,
+});
+
+export default connect(mapStateToProps, null)(Register);
 
 const styles = StyleSheet.create({
   container: {
@@ -154,15 +149,18 @@ const styles = StyleSheet.create({
   sectionLoginForm: {
     paddingHorizontal: 30,
   },
-  buttonLogin: {
-    backgroundColor: colors.colorPrimary,
+  buttonLogin: (registerLoading) => ({
+    backgroundColor: registerLoading ? colors.green : colors.colorPrimary,
+    flexDirection: registerLoading ? "row" : null,
+    justifyContent: "center",
     alignItems: "center",
     paddingVertical: 17,
     borderRadius: 8,
-  },
+  }),
   textLogin: {
     color: colors.white,
     fontSize: RFValue(24, heightMobileUI),
+    marginLeft: 10,
   },
   sectionRegisterAccount: {
     flexDirection: "row",
